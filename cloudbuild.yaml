@@ -10,10 +10,20 @@ steps:
       echo "$TAG_NAME"
       echo "***********************"
 
+- id: 'Clone repo with TAG'
+  name: 'gcr.io/pruebas-pubsub-systerminal/git'
+  args: ['clone', '--branch', '$TAG_NAME', 'https://github.com/emoronayuso/pubsub-publisher.git']
+  dir: '.'
+
 - id: 'gcloud functions deploy'
-  name: gcr.io/cloud-builders/gcloud
-  entrypoint: 'sh'
-  args: 
-    - '-c'
-    - >
-      gcloud projects list
+  name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - publisher_cf
+  - --region=europe-west3
+  - --source=.
+  - --trigger-bucket=pruebas-pubsub-systerminal-input-data
+  - --runtime=python39
+  - --service-account=sa-publisher@pruebas-pubsub-systerminal.iam.gserviceaccount.com
