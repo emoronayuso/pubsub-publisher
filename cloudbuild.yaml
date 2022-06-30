@@ -11,8 +11,12 @@ steps:
       echo "***********************"
 
 - id: 'Clone repo with TAG'
-  name: 'gcr.io/pruebas-pubsub-systerminal/git'
-  args: ['clone', '--branch', '$TAG_NAME', 'https://github.com/emoronayuso/pubsub-publisher.git']
+  name: 'gcr.io/cloud-builders/git'
+  args:
+  - clone
+  - --branch
+  - $TAG_NAME
+  - 'https://github.com/emoronayuso/pubsub-publisher.git'
   dir: '.'
 
 - id: 'gcloud functions deploy'
