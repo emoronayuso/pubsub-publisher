@@ -1,38 +1,53 @@
+import base64
+import json
 import os
 from google.cloud import pubsub_v1
 
-#credentials_path = '/PATH/TO/YOU/PRIVATE/JSON/FILE/HERE/myFile.privateKey.json'
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
+publisher = pubsub_v1.PublisherClient()
+PROJECT_ID = os.getenv('pruebas-pubsub-systerminal')
 
-def publisher_cf(event, context):
-    """Background Cloud Function to be triggered by Cloud Storage.
-       This generic function logs relevant data when a file is changed,
-       and works for all Cloud Storage CRUD operations.
-    Args:
-        event (dict):  The dictionary with data specific to this type of event.
-                       The `data` field contains a description of the event in
-                       the Cloud Storage `object` format described here:
-                       https://cloud.google.com/storage/docs/json_api/v1/objects#resource
-        context (google.cloud.functions.Context): Metadata of triggering event.
-    Returns:
-        None; the output is written to Cloud Logging
-    """
 
-    print('Event ID: {}'.format(context.event_id))
-    print('Event type: {}'.format(context.event_type))
-    print('Bucket: {}'.format(event['bucket']))
-    print('File: {}'.format(event['name']))
-    print('Metageneration: {}'.format(event['metageneration']))
-    print('Created: {}'.format(event['timeCreated']))
-    print('Updated: {}'.format(event['updated']))
+def publisher_cf(request):
+    data = request.data
 
-    publisher = pubsub_v1.PublisherClient()
-    topic_path = 'projects/pruebas-pubsub-systerminal/topics/topic-cf'
+    if data is None:
+        print('request.data is empty')
+        return ('request.data is empty', 400)
 
-    data = 'A garden sensor is ready!'
-    data = data.encode('utf-8')
-    attributes = {
-       'sensorName': 'garden-001',
-       'temperature': '75.0',
-       'humidity': '60'
-    }
+    print(f'request data: {data}')
+    
+    data_json = json.loads(data)                                        # turn the string into a dictionary
+    print(f'json = {data_json}')
+
+    sensor_name = data_json['sensorName']
+    temperature = data_json['temperature']
+    humidity = data_json['humidity']
+    
+    print(f'sensor_name = {sensor_name}')
+    print(f'temperature = {temperature}')
+    print(f'humidity = {humidity}')
+
+    ###############################
+    # move the data to Pubsub!
+
+    topic_path = 'projects/pruebas-pubsub-systerminal/topics/topic-cf'                    # Pubsub topic path
+
+    message_json = json.dumps({
+        'data': {'message': 'sensor readings!'},
+        'readings': {
+            'sensorName': sensor_name,
+            'temperature': temperature,
+            'humidity': humidity
+        }
+    })
+    message_bytes = message_json.encode('utf-8')
+
+    try:
+        publish_future = publisher.publish(topic_path, data=message_bytes)
+        publish_future.result()                                         # verify that the publish succeeded
+    except Exception as e:
+        print(e)
+        return (e, 500)
+
+    return ('Message received and published to Pubsub', 200)
+
