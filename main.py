@@ -15,6 +15,7 @@ def publisher_cf(event, context):
     storage_client = storage.Client()
     bucket = storage_client.bucket(f'{PROJECT_ID}-input-data')
     blob = bucket.blob(event['name'])
+    destination_file = 'file.json'
     blob.download_to_filename(destination_file)
 
     with open(destination_file, encoding="utf-8") as infile:
