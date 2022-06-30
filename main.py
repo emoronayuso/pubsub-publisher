@@ -14,11 +14,12 @@ def publisher_cf(event, context):
     
     storage_client = storage.Client()
     bucket = storage_client.bucket(f'{PROJECT_ID}-input-data')
-    blob = bucket.blob(event['name'])
-    destination_file = 'file.json'
-    blob.download_to_filename(destination_file)
+    blob = bucket.get_blob(event['name'])
 
-    with open(destination_file, encoding="utf-8") as infile:
+#    destination_file = 'file.json'
+#    blob.download_to_filename(destination_file)
+
+    with open(blob, encoding="utf-8") as infile:
         data_json = json.loads(infile)
 
     if data_json is None:
