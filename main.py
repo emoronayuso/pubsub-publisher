@@ -18,8 +18,11 @@ def publisher_cf(event, context):
 #    print(f'request data: {data}')
     
 #    data_json = json.loads(data)
-    data_json = json.loads(event['name'])                                        # turn the string into a dictionary
-    if data is None:
+    with open(event['name'], encoding="utf-8") as infile:
+        data_json = json.loads(infile)
+
+    #data_json = json.loads(event['name'])                                        # turn the string into a dictionary
+    if data_json is None:
         return ('request.data is empty', 400)
 #    print(f'json = {data_json}')
 
