@@ -4,7 +4,7 @@ import os
 from google.cloud import pubsub_v1
 from google.cloud import storage
 
-PROJECT_ID = os.getenv('pruebas-pubsub-systerminal')
+#PROJECT_ID = os.getenv('pruebas-pubsub-systerminal')
 
 
 def publisher_cf(event, context):
@@ -13,7 +13,7 @@ def publisher_cf(event, context):
     # read data from Bucket!
     
     storage_client = storage.Client()
-    bucket = storage_client.bucket(f'{PROJECT_ID}-input-data')
+    bucket = storage_client.bucket('pruebas-pubsub-systerminal-input-data')
     blob = bucket.get_blob(event['name'])
 
 #    destination_file = 'file.json'
@@ -34,7 +34,7 @@ def publisher_cf(event, context):
     # move the data to Pubsub!
 
     publisher = pubsub_v1.PublisherClient()
-    topic_path = f'projects/{PROJECT_ID}/topics/topic-cf'
+    topic_path = 'projects/pruebas-pubsub-systerminal/topics/topic-cf'
 
     message_json = json.dumps({
         'data': {'message': 'sensor readings!'},
