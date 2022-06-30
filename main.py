@@ -2,42 +2,37 @@ import base64
 import json
 import os
 from google.cloud import pubsub_v1
+from google.cloud import storage
 
-publisher = pubsub_v1.PublisherClient()
 PROJECT_ID = os.getenv('pruebas-pubsub-systerminal')
 
 
 def publisher_cf(event, context):
-#    data = request.data
-    
 
-#    if data is None:
-#        print('request.data is empty')
-#        return ('request.data is empty', 400)
-
-#    print(f'request data: {data}')
+    ##############################
+    # read data from Bucket!
     
-#    data_json = json.loads(data)
-    with open(event['name'], encoding="utf-8") as infile:
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(f'{PROJECT_ID}-input-data')
+    blob = bucket.blob(event['name'])
+    blob.download_to_filename(destination_file)
+
+    with open(destination_file, encoding="utf-8") as infile:
         data_json = json.loads(infile)
 
-    #data_json = json.loads(event['name'])                                        # turn the string into a dictionary
     if data_json is None:
-        return ('request.data is empty', 400)
-#    print(f'json = {data_json}')
+        data_json = 'Data is empty'
 
     sensor_name = data_json['sensorName']
     temperature = data_json['temperature']
     humidity = data_json['humidity']
     
-#    print(f'sensor_name = {sensor_name}')
-#    print(f'temperature = {temperature}')
-#    print(f'humidity = {humidity}')
 
     ###############################
     # move the data to Pubsub!
 
-    topic_path = 'projects/pruebas-pubsub-systerminal/topics/topic-cf'                    # Pubsub topic path
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = f'projects/{PROJECT_ID}/topics/topic-cf'
 
     message_json = json.dumps({
         'data': {'message': 'sensor readings!'},
@@ -51,10 +46,10 @@ def publisher_cf(event, context):
 
     try:
         publish_future = publisher.publish(topic_path, data=message_bytes)
-        publish_future.result()                                         # verify that the publish succeeded
+        publish_future.result() # verify that the publish succeeded
     except Exception as e:
         print(e)
         return (e, 500)
 
-    return ('Message received and published to Pubsub', 200)
+    print('Message received from Bucket and published to Pubsub')
 
