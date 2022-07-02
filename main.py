@@ -19,13 +19,17 @@ def publisher_cf(event, context):
 #    dict = json.load(blob_file)
 #    json_json_str = json.dumps(dict)
     
-    file = bucket.get_blob(event['name'])
-    data = file.read();
-    data_json = json.loads(data)
+    blob = bucket.get_blob(event['name'])
+    data_json_str = blob.download_as_string()
+
+    #data = file.read();
+    #data_json = json.loads(data)
 
 
-    if data_json is None:
-        data_json = 'Data is empty'
+#    if data_json_str is None:
+#        data_json_str = 'Data is empty'
+
+    data_json = json.loads(data_json_str)
 
     sensor_name = data_json['sensorName']
     temperature = data_json['temperature']
