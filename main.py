@@ -15,21 +15,24 @@ def publisher_cf(event, context):
     storage_client = storage.Client()
     bucket = storage_client.bucket('pruebas-pubsub-systerminal-input-data')
 
-    blob = bucket.get_blob(event['name'])
-    json_str = json.dumps(blob)
-    data_json = json.loads(json_str)
+    blob_file = bucket.get_blob(event['name'])
+    dict = json.load(blob_file)
+    json_json_str = json.dumps(dict)
+
+
+#    data_json = json.loads(json_str)
 #    destination_file = 'file.json'
 #    blob.download_to_filename(destination_file)
 
 #    with open(blob, encoding="utf-8") as infile:
 #        data_json = json.loads(infile)
 
-    if data_json is None:
-        data_json = 'Data is empty'
+    if data_json_str is None:
+        data_json_str = 'Data is empty'
 
-    sensor_name = data_json['sensorName']
-    temperature = data_json['temperature']
-    humidity = data_json['humidity']
+    sensor_name = dict['sensorName']
+    temperature = dict['temperature']
+    humidity = dict['humidity']
     
 
     ###############################
