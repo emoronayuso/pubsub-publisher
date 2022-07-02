@@ -3,3 +3,4 @@ cloudbuild.yaml
 .git
 pubsub-publisher
 .gcloudignore
+test
