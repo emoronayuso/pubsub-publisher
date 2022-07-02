@@ -15,12 +15,12 @@ def publisher_cf(event, context):
     storage_client = storage.Client()
     bucket = storage_client.bucket('pruebas-pubsub-systerminal-input-data')
     blob = bucket.get_blob(event['name'])
-
+    data_json = json.loads(blob)
 #    destination_file = 'file.json'
 #    blob.download_to_filename(destination_file)
 
-    with open(blob, encoding="utf-8") as infile:
-        data_json = json.loads(infile)
+#    with open(blob, encoding="utf-8") as infile:
+#        data_json = json.loads(infile)
 
     if data_json is None:
         data_json = 'Data is empty'
