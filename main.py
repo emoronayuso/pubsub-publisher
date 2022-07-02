@@ -14,8 +14,10 @@ def publisher_cf(event, context):
     
     storage_client = storage.Client()
     bucket = storage_client.bucket('pruebas-pubsub-systerminal-input-data')
+
     blob = bucket.get_blob(event['name'])
-    data_json = json.loads(blob)
+    json_str = json.dumps(blob)
+    data_json = json.loads(json_str)
 #    destination_file = 'file.json'
 #    blob.download_to_filename(destination_file)
 
