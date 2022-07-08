@@ -19,7 +19,7 @@ def publisher_cf(event, context):
     data_json_str = blob.download_as_string()
     data_json = json.loads(data_json_str)
 
-    sensor_name = data_json['sensorName']
+    sensor_id = data_json['sensorId']
     temperature = data_json['temperature']
     humidity = data_json['humidity']
     
@@ -32,7 +32,7 @@ def publisher_cf(event, context):
     message_json = json.dumps({
         'data': {'message': 'sensor readings!'},
         'readings': {
-            'sensorName': sensor_name,
+            'sensorId': sensor_id,
             'temperature': temperature,
             'humidity': humidity
         }
