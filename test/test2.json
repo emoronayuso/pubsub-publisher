@@ -1,5 +1,5 @@
 {
-  "sensorName": "sensor_2",
+  "sensorId": 2,
   "temperature": 31,
   "humidity": 9
 }
