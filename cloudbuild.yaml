@@ -19,29 +19,6 @@ steps:
   - 'https://github.com/emoronayuso/pubsub-publisher.git'
   dir: '.'
 
-# https://cloud.google.com/artifact-registry/docs/python/store-python
-# https://cloud.google.com/functions/docs/building/pack#functions-local-ff-install-python
-- id: 'BuildPack CloudFunction'
-  name: 'gcr.io/buildpacks/builder'
-  args: ["pack", "build", "--builder=gcr.io/buildpacks/builder:v1", "--env", "GOOGLE_RUNTIME=python", "--env", "GOOGLE_FUNCTION_TARGET=publisher_cf", "publisher_cf" ]
-
-- id: 'Publish CloudFunction'
-  name: 'gcr.io/buildpacks/builder'
-  args: ["pack", "build", "--publish=gcr.io/pruebas-pubsub-systerminal/publisher_cf"]
-
-#- id: 'Create tar.gz file'
-#  name: 'gcr.io/cloud-builders/gcloud'
-#  args: ["zip", "-r", "/workspace/${SHORT_SHA}.zip", "." ]
-#
-#- id: "Upload to artifact registry"
-#  name: maven:3-jdk-11-openj9
-#  entrypoint: mvn
-#  args: ['deploy:deploy-file', '-Dfile=/workspace/${SHORT_SHA}.zip', '-DartifactId=$REPO_NAME', '-Dversion=$TAG_NAME', '-Dpackaging=zip', '-DrepositoryId=cloudfunctions', '-Durl=https://europe-west3-maven.pkg.dev/cloud-functions/']
-#######
-
-
-
-
 - id: 'gcloud functions deploy'
   name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   args:
@@ -54,3 +31,6 @@ steps:
   - --trigger-bucket=pruebas-pubsub-systerminal-input-data
   - --runtime=python39
   - --service-account=sa-publisher@pruebas-pubsub-systerminal.iam.gserviceaccount.com
+  - --docker-repository=europe-docker.pkg.dev/pruebas-pubsub-systerminal/eu.gcr.io/publisher:$TAG_NAME
+# projects/PROJECT_NAME/locations/LOCATION/repositories/REPOSITORY
+# us-west2-docker.pkg.dev/gcb-docs-project/quickstart-docker-repo/quickstart-image:tag1
