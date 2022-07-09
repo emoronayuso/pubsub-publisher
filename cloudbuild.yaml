@@ -32,6 +32,6 @@ steps:
   - --runtime=python39
   - --service-account=sa-publisher@pruebas-pubsub-systerminal.iam.gserviceaccount.com
 #  - --docker-repository=europe-docker.pkg.dev/pruebas-pubsub-systerminal/eu.gcr.io/publisher:$TAG_NAME
-  - --docker-repository=projects/pruebas-pubsub-systerminal/locations/europe-west3/repositories/publisher_cf:$TAG_NAME
+  - --docker-repository=projects/pruebas-pubsub-systerminal/locations/europe-west3/repositories/publisher_cf
 # projects/PROJECT_NAME/locations/LOCATION/repositories/REPOSITORY
 # us-west2-docker.pkg.dev/gcb-docs-project/quickstart-docker-repo/quickstart-image:tag1
