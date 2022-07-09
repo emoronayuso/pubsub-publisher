@@ -23,11 +23,11 @@ steps:
 # https://cloud.google.com/functions/docs/building/pack#functions-local-ff-install-python
 - id: 'BuildPack CloudFunction'
   name: 'gcr.io/buildpacks/builder'
-  args: ["pack", "build", "--builder", "gcr.io/buildpacks/builder:v1", "--env", "GOOGLE_RUNTIME=python", "--env", "GOOGLE_FUNCTION_TARGET=publisher_cf", "publisher_cf" ]
+  args: ["pack", "build", "--builder=gcr.io/buildpacks/builder:v1", "--env", "GOOGLE_RUNTIME=python", "--env", "GOOGLE_FUNCTION_TARGET=publisher_cf", "publisher_cf" ]
 
 - id: 'Publish CloudFunction'
   name: 'gcr.io/buildpacks/builder'
-  args: ["pack", "build", "--publish", "gcr.io/pruebas-pubsub-systerminal/publisher_cf"]
+  args: ["pack", "build", "--publish=gcr.io/pruebas-pubsub-systerminal/publisher_cf"]
 
 #- id: 'Create tar.gz file'
 #  name: 'gcr.io/cloud-builders/gcloud'
